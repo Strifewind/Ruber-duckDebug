@@ -5,83 +5,179 @@ different information and practices explaining evidence and testing hypotheses.
 The duck facilitates with questions rather than revealing private information or
 supplying fixes.
 
-## Template
+## What is included
 
 The application is scaffolded with Phoenix 1.8, LiveView, Ecto/PostgreSQL,
 Phoenix PubSub, Bandit, and the standard Tailwind/esbuild asset pipeline.
-The home LiveView introduces the roles and cycles through public duck questions.
-These preview prompts are local to each LiveView, not synchronized between players.
-
-This is an application shell, not a playable game yet: rooms, player identity,
-role assignment, private challenge packages, chat, CodeMirror, validation execution,
-AI integration, debriefs, and timers are not implemented. No private challenge
-materials are loaded or sent to browsers.
+The role-selection screens at `/` are previews with prompts local to each LiveView.
+The optional playable flow at `/play` provides three-player rooms, private role
+materials, a shared notebook, restricted Python checks, and local Ollama integration.
+See [LLM and multiplayer integration](docs/llm-comms.md) for gameplay, configuration,
+supported Python features, and demo limits.
 
 ## Local setup
 
 ### Requirements
 
-- Elixir 1.17 or newer with a compatible Erlang/OTP release (for example,
-  Elixir 1.18 with OTP 27).
-- PostgreSQL running locally.
-- Access to Hex and GitHub for dependencies and asset downloads.
+- Elixir 1.17 or newer and a compatible Erlang/OTP release (Elixir 1.18 with
+  OTP 27 is a known-good combination). Follow the
+  [official Elixir installation guide](https://elixir-lang.org/install.html) for
+  your operating system, and verify the installed versions before continuing.
+- Git, PostgreSQL, and Python 3.12 or newer. Python runs challenge checks on the
+  Phoenix server; set `PYTHON_EXECUTABLE` if it is not discoverable on `PATH`.
+- Internet access to Hex and GitHub for dependencies and asset downloads.
 
-On macOS, install [Homebrew](https://brew.sh) if needed, then install Erlang/OTP
-and Elixir:
+### Windows
 
-```sh
-brew install erlang elixir
+Use PowerShell. Install Git and Python 3.12 with WinGet:
+
+```powershell
+winget install --id Git.Git --exact
+winget install --id Python.Python.3.12 --exact
 ```
 
-Verify the installations:
+Install Erlang/OTP and Elixir using the Windows instructions in the
+[Elixir installation guide](https://elixir-lang.org/install.html). Install
+PostgreSQL using the [Windows installer](https://www.postgresql.org/download/windows/);
+remember the password chosen for the `postgres` database user. Open a new
+PowerShell window after installing tools, then verify:
 
-```sh
-erl -noshell -eval 'io:format("OTP ~s~n", [erlang:system_info(otp_release)]), halt().'
+```powershell
+git --version
 elixir --version
 mix --version
-```
-
-Install PostgreSQL and start it as a background service:
-
-```sh
-brew install postgresql@17
-brew services start postgresql@17
-```
-
-Verify PostgreSQL is running:
-
-```sh
+python --version
 psql --version
-pg_isready
 ```
 
-The local configuration defaults to a PostgreSQL user named `postgres` on
-`localhost`. If your local setup uses a different username or connection
-settings, set `PGUSER`, `PGPASSWORD`, and `PGHOST` in your shell to match.
-The configured user must be able to create databases. `mix setup` creates
-`ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
-No PostgreSQL password is committed.
+Set the database connection for the current PowerShell session. Enter the
+PostgreSQL password when prompted:
 
-Enter the postgres session
+```powershell
+$env:PGUSER = "postgres"
+$env:PGHOST = "localhost"
+$env:PGPASSWORD = Read-Host "PostgreSQL password"
+```
+
+If Python is not found by the app, set its full path:
+
+```powershell
+$env:PYTHON_EXECUTABLE = (Get-Command python).Source
+```
+
+If PostgreSQL's `psql` command is not recognized, add its `bin` directory
+(typically `C:\Program Files\PostgreSQL\17\bin`) to your `PATH`, or use the
+SQL Shell (psql) shortcut installed with PostgreSQL.
+
+### Ubuntu Linux
+
+On Ubuntu 24.04 LTS, install Git, PostgreSQL, and Python:
+
+```sh
+sudo apt update
+sudo apt install -y git postgresql postgresql-contrib python3
+```
+
+Install Erlang/OTP and Elixir using the Linux instructions in the
+[Elixir installation guide](https://elixir-lang.org/install.html). Confirm the
+Python version is 3.12 or newer; if not, install a supported Python version and
+set `PYTHON_EXECUTABLE` to its executable path. Set a password for PostgreSQL's
+`postgres` role so the app can connect over localhost:
+
 ```sh
 sudo -u postgres psql
 ```
 
-inside postgres reset password
-```sh
+At the `psql` prompt, set the password and exit:
+
+```text
 \password postgres
 \q
 ```
-To update the postgres instance with a password and apply the password the app.
+
+Set the connection settings in the terminal used to start the app. The password
+prompt does not put the entered value in shell history:
+
 ```sh
+export PGUSER=postgres
+export PGHOST=localhost
 read -rsp "PostgreSQL password: " PGPASSWORD; echo
 export PGPASSWORD
-cd /home/runner/work/Ruber-duckDebug/Ruber-duckDebug
 ```
 
+If you installed a separate Python 3.12 executable, select it explicitly:
 
-From the repository root, install the project dependencies and prepare the
-database and assets:
+```sh
+export PYTHON_EXECUTABLE="$(command -v python3.12)"
+```
+
+Verify the installation:
+
+```sh
+git --version
+elixir --version
+mix --version
+python3 --version
+psql --version
+pg_isready
+```
+
+### macOS
+
+Install [Homebrew](https://brew.sh) if needed, then install Erlang/OTP, Elixir,
+Git, PostgreSQL, and Python:
+
+```sh
+brew install erlang elixir git postgresql@17 python@3.12
+brew services start postgresql@17
+```
+
+Homebrew's local PostgreSQL setup normally creates a database role matching
+your macOS account. Set a password for that role so the app can connect over
+localhost:
+
+```sh
+psql -d postgres
+```
+
+At the `psql` prompt, set the password and exit:
+
+```text
+\password
+\q
+```
+
+Use the role matching your macOS account and enter its password in the app
+terminal:
+
+```sh
+export PGUSER="$(whoami)"
+export PGHOST=localhost
+read -rsp "PostgreSQL password: " PGPASSWORD; echo
+export PGPASSWORD
+export PYTHON_EXECUTABLE="$(command -v python3.12)"
+```
+
+If you use a different PostgreSQL role, set `PGUSER` to that role and provide
+its password in `PGPASSWORD`. Verify the installation:
+
+```sh
+git --version
+elixir --version
+mix --version
+python3.12 --version
+psql --version
+pg_isready
+```
+
+The configured PostgreSQL role must be able to create databases. `mix setup`
+creates `ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test`
+database. Do not commit local credentials.
+
+### Install dependencies and run
+
+In the terminal configured above, change to the repository root and install
+dependencies, prepare the database, and build assets:
 
 ```sh
 mix local.hex --force
@@ -89,44 +185,30 @@ mix local.rebar --force
 mix setup
 ```
 
-Start the development server:
+Start the development server and open <http://localhost:4000>:
 
 ```sh
 mix phx.server
 ```
 
-Open <http://localhost:4000>. For an interactive console, use `iex -S mix phx.server`.
-The development dashboard is available at `/dev/dashboard`, in development only.
-
-Database connections default to user `postgres` on `localhost`. Set `PGUSER`,
-`PGPASSWORD`, and `PGHOST` in your shell to match your local PostgreSQL installation.
-The configured user must be able to create databases. `mix setup` creates
-`ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
-No PostgreSQL password is committed.
+For an interactive console, run `iex -S mix phx.server`. The development
+dashboard is available at `/dev/dashboard`, in development only.
 
 ## Local AI setup (Ollama and Gemma 3)
 
-The planned local model is `gemma3:4b`, served through Ollama. AI integration
-is not implemented in the application yet; these steps prepare the local runtime.
+Ollama is optional. The `/play` flow uses the `gemma3:4b` model for challenge
+generation and additional end-of-round reviews; it falls back to curated challenges
+when generation is unavailable. Install Ollama using the
+[official instructions](https://ollama.com/download), then run:
 
-On Windows, install Ollama from PowerShell using the command from the
-[official Ollama download page](https://ollama.com/download/windows):
-
-```powershell
-irm https://ollama.com/install.ps1 | iex
-```
-
-Start Ollama, then open a new terminal in VS Code (restart VS Code if `ollama`
-is not recognized). Download the model and try an interactive conversation:
-
-```powershell
+```sh
 ollama pull gemma3:4b
 ollama run gemma3:4b
 ```
 
-Enter `/bye` to exit the conversation. Use `ollama list` to confirm the model
-is downloaded. See the [Gemma 3 4B model page](https://ollama.com/library/gemma3:4b)
-for model details.
+Enter `/bye` to exit the interactive chat. Keep Ollama running while playing.
+See [LLM and multiplayer integration](docs/llm-comms.md) for environment settings
+and the live-model smoke check.
 
 ## Checks
 
@@ -138,8 +220,9 @@ mix precommit
 ```
 
 `mix precommit` compiles with warnings as errors, removes unused dependency locks,
-formats, and runs tests. Tests require PostgreSQL; LiveView tests cover the
-landing page and public prompt interaction.
+formats, and runs tests. Tests require PostgreSQL and cover the role previews,
+lobby, room authorization and round flow, Python restrictions, and stubbed Ollama
+requests. `mix assets.build` uses the project's standard asset pipeline.
 
 ## Cooperative model
 
@@ -154,14 +237,11 @@ hypothesis, and lets the team revise or submit a solution. The full challenge is
 revealed only during the debrief; roles then rotate. An optional round timer can
 support the team without competitive interruptions.
 
-Future rooms must be coordinated by the server. Each challenge package needs driver
-code, observer evidence, researcher references, validation checks, and a root-cause
-debrief. Authorize identity, membership, and role server-side before sending any
-material. Apply this to LiveView mounts, events, broadcasts, check results,
-reconnects, and role changes; never send the whole challenge and hide panels with
-CSS. The app must not automatically expose another role's material. Any future
-execution of player-submitted code needs an isolated sandbox, not the Phoenix
-application process.
+Room membership, role authorization, turn transitions, and private challenge
+materials are enforced server-side. Seat URLs are signed bearer links; share only the
+room code, and keep each seat URL private. PubSub broadcasts room-change notifications
+rather than challenge contents. Python checks use a restricted interpreter, not a
+general-purpose sandbox; see the integration guide for its limits.
 
 ## Production configuration
 

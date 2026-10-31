@@ -12,6 +12,9 @@ defmodule RuberDuckDebug.Application do
       RuberDuckDebug.Repo,
       {DNSCluster, query: Application.get_env(:ruber_duck_debug, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: RuberDuckDebug.PubSub},
+      {Registry, keys: :unique, name: RuberDuckDebug.RoomRegistry},
+      {DynamicSupervisor, name: RuberDuckDebug.RoomSupervisor, strategy: :one_for_one},
+      {Task.Supervisor, name: RuberDuckDebug.AITasks},
       # Start a worker by calling: RuberDuckDebug.Worker.start_link(arg)
       # {RuberDuckDebug.Worker, arg},
       # Start to serve requests, typically the last entry

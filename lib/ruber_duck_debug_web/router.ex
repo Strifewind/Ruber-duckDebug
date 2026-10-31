@@ -7,7 +7,7 @@ defmodule RuberDuckDebugWeb.Router do
     plug :fetch_live_flash
     plug :put_root_layout, html: {RuberDuckDebugWeb.Layouts, :root}
     plug :protect_from_forgery
-    plug :put_secure_browser_headers
+    plug :put_secure_browser_headers, %{"referrer-policy" => "no-referrer"}
   end
 
   pipeline :api do
@@ -18,6 +18,8 @@ defmodule RuberDuckDebugWeb.Router do
     pipe_through :browser
 
     live "/", HomeLive, :index
+    live "/play", LobbyLive, :index
+    live "/rooms/:code", RoomLive, :show
   end
 
   # Other scopes may use custom stacks.
