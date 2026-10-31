@@ -10,7 +10,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, page_title: "Debug together", prompt_index: 0, selected_role: nil)}
+    {:ok, assign(socket, page_title: "Debug together", prompt_index: 0, selected_role: nil, is_talking: false)}
   end
 
   @impl true
@@ -23,7 +23,14 @@ defmodule RuberDuckDebugWeb.HomeLive do
   end
 
   def handle_event("next_prompt", _params, socket) do
-    {:noreply, update(socket, :prompt_index, &rem(&1 + 1, length(@prompts)))}
+    Process.send_after(self(), :stop_talking, 3000)
+    socket = update(socket, :prompt_index, &rem(&1 + 1, length(@prompts)))
+    {:noreply, assign(socket, is_talking: true)}
+  end
+
+  @impl true
+  def handle_info(:stop_talking, socket) do
+    {:noreply, assign(socket, is_talking: false)}
   end
 
   @impl true
@@ -35,9 +42,9 @@ defmodule RuberDuckDebugWeb.HomeLive do
       <.quackula_style />
 
       <%= if @selected_role do %>
-        <.role_screen role={@selected_role} duck_prompt={@duck_prompt} prompt_index={@prompt_index} />
+        <.role_screen role={@selected_role} duck_prompt={@duck_prompt} prompt_index={@prompt_index} is_talking={@is_talking} />
       <% else %>
-        <.landing />
+        <.landing is_talking={@is_talking} />
       <% end %>
     </Layouts.app>
     """
@@ -52,24 +59,40 @@ defmodule RuberDuckDebugWeb.HomeLive do
         66%  { transform: translateY(-3px) translateX(-3px) rotate(2deg); }
         100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
       }
+      .beak-bottom {
+        transform-origin: 130px 80px;
+        transition: transform 0.1s ease-in-out;
+      }
+      .is-talking .beak-bottom {
+        animation: quackula-talk 0.2s infinite alternate;
+      }
+      @keyframes quackula-talk {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(15deg); }
+      }
     </style>
     """
   end
 
   defp quackula_svg(assigns) do
     ~H"""
-    <svg width={@size} height={@size} viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"
-         style="animation: spookyFloat 3s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(255,0,0,0.3)); flex-shrink: 0;">
-      <path d="M60,140 Q100,180 140,140 L160,180 L40,180 Z" fill="#4a0404" />
-      <path d="M60,120 Q60,80 100,80 Q140,80 140,120 Q140,160 100,160 Q60,160 60,120" fill="#F0E68C" stroke="#8B8000" stroke-width="3"/>
-      <path d="M70,90 L60,50 L100,80 L140,50 L130,90 Z" fill="#000" stroke="#4a0404" stroke-width="2"/>
-      <circle cx="110" cy="75" r="30" fill="#F0E68C" stroke="#8B8000" stroke-width="3"/>
-      <path d="M130,75 L150,75 L135,85 Z" fill="#FF8C00" stroke="#8B8000" stroke-width="2"/>
-      <path d="M132,82 L134,86 L136,82 Z" fill="white" />
-      <path d="M138,82 L140,86 L142,82 Z" fill="white" />
-      <circle cx="120" cy="68" r="4" fill="#2d0000"/>
-      <path d="M70,110 Q100,100 130,110" fill="none" stroke="#000" stroke-width="8" stroke-linecap="round"/>
-    </svg>
+    <div id="quackula-svg-wrap" class={[@is_talking && "is-talking"]} style="flex-shrink: 0;">
+      <svg width={@size} height={@size} viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"
+           style="animation: spookyFloat 3s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(255,0,0,0.3));">
+        <path d="M60,140 Q100,180 140,140 L160,180 L40,180 Z" fill="#4a0404" />
+        <path d="M60,120 Q60,80 100,80 Q140,80 140,120 Q140,160 100,160 Q60,160 60,120" fill="#F0E68C" stroke="#8B8000" stroke-width="3"/>
+        <path d="M70,90 L60,50 L100,80 L140,50 L130,90 Z" fill="#000" stroke="#4a0404" stroke-width="2"/>
+        <circle cx="110" cy="75" r="30" fill="#F0E68C" stroke="#8B8000" stroke-width="3"/>
+        <g class="beak-group">
+          <path d="M130,75 L150,75 L135,80 Z" fill="#FF8C00" stroke="#8B8000" stroke-width="2"/>
+          <path class="beak-bottom" d="M130,80 L150,80 L135,85 Z" fill="#FF8C00" stroke="#8B8000" stroke-width="2"/>
+        </g>
+        <path d="M132,80 L134,83 L136,80 Z" fill="white" />
+        <path d="M138,80 L140,83 L142,80 Z" fill="white" />
+        <circle cx="120" cy="68" r="4" fill="#2d0000"/>
+        <path d="M70,110 Q100,100 130,110" fill="none" stroke="#000" stroke-width="8" stroke-linecap="round"/>
+      </svg>
+    </div>
     """
   end
 
@@ -109,7 +132,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
 
     <section aria-labelledby="duck-home-heading" class="space-y-4 rounded-box bg-base-200 p-6 mt-8">
       <div class="flex items-center gap-6">
-        <.quackula_svg size="80" />
+        <.quackula_svg size="80" is_talking={@is_talking} />
         <div>
           <h2 id="duck-home-heading" class="text-2xl font-semibold">Quackula</h2>
           <p class="text-sm text-error font-mono animate-pulse">JUDGING YOUR CODE... 🧛‍♂️🦆</p>
@@ -130,7 +153,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
         # [Challenge code will appear here once rooms are wired up]
       </div>
     </section>
-    <.quackula_panel duck_prompt={@duck_prompt} />
+    <.quackula_panel duck_prompt={@duck_prompt} is_talking={@is_talking} />
     """
   end
 
@@ -144,7 +167,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
         [Bug report / symptoms will appear here once rooms are wired up]
       </div>
     </section>
-    <.quackula_panel duck_prompt={@duck_prompt} />
+    <.quackula_panel duck_prompt={@duck_prompt} is_talking={@is_talking} />
     """
   end
 
@@ -158,7 +181,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
         [Reference materials will appear here once rooms are wired up]
       </div>
     </section>
-    <.quackula_panel duck_prompt={@duck_prompt} />
+    <.quackula_panel duck_prompt={@duck_prompt} is_talking={@is_talking} />
     """
   end
 
@@ -178,7 +201,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
     ~H"""
     <section aria-labelledby="duck-heading" class="space-y-4 rounded-box bg-base-200 p-6 mt-6">
       <div class="flex items-center gap-6">
-        <.quackula_svg size="80" />
+        <.quackula_svg size="80" is_talking={@is_talking} />
         <div>
           <h2 id="duck-heading" class="text-2xl font-semibold">Quackula</h2>
           <p class="text-sm text-error font-mono animate-pulse">JUDGING YOUR CODE... 🧛‍♂️🦆</p>
