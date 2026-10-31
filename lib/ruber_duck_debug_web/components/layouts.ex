@@ -35,11 +35,20 @@ defmodule RuberDuckDebugWeb.Layouts do
 
   def app(assigns) do
     ~H"""
-    <header class="navbar px-4 sm:px-6 lg:px-8">
+    <header class="navbar px-4 sm:px-6 lg:px-8 border-b border-primary/20 bg-base-200/50 backdrop-blur-sm sticky top-0 z-10">
       <div class="flex-1">
-        <.link navigate={~p"/"} class="flex w-fit items-center gap-2 font-semibold">
-          <span aria-hidden="true">🦆</span>
-          Ruber-duckDebug
+        <.link navigate={~p"/"} class="flex w-fit items-center gap-3 group">
+          <svg width="32" height="32" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"
+               class="group-hover:rotate-12 transition-transform duration-300">
+            <path d="M70,90 L60,50 L100,80 L140,50 L130,90 Z" fill="#000" />
+            <circle cx="110" cy="75" r="30" fill="#F0E68C" stroke="#8B8000" stroke-width="5"/>
+            <path d="M130,75 L150,75 L135,80 Z" fill="#FF8C00" />
+            <circle cx="120" cy="68" r="4" fill="#2d0000"/>
+          </svg>
+          <div class="flex flex-col leading-tight">
+            <span class="font-black tracking-tight text-base-content dark:text-primary font-mono">Ruber-duckDebug</span>
+            <span class="text-[10px] font-mono text-base-content/80 uppercase tracking-widest hidden sm:block">3 players · 1 bug · 0 mercy</span>
+          </div>
         </.link>
       </div>
       <div class="flex-none">
@@ -56,6 +65,12 @@ defmodule RuberDuckDebugWeb.Layouts do
         {render_slot(@inner_block)}
       </div>
     </main>
+
+    <footer class="border-t border-base-300 mt-16 py-6 px-4 text-center">
+      <p class="text-xs font-mono text-base-content/80 uppercase tracking-widest">
+        Built with Gemma 4 + Phoenix · Halloween Hackathon 2026 🦇
+      </p>
+    </footer>
 
     <.flash_group flash={@flash} />
     """
