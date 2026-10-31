@@ -5,18 +5,15 @@ different information and practices explaining evidence and testing hypotheses.
 The duck facilitates with questions rather than revealing private information or
 supplying fixes.
 
-## Template
+## What is included
 
 The application is scaffolded with Phoenix 1.8, LiveView, Ecto/PostgreSQL,
 Phoenix PubSub, Bandit, and the standard Tailwind/esbuild asset pipeline.
-The home LiveView introduces the roles and cycles through public duck questions.
-These preview prompts are local to each LiveView, not synchronized between players.
-
-The role-selection screens at `/` remain previews. An additional playable flow at
-`/play` provides server-managed rooms, private role materials, team communication,
-Python checks, and local Ollama integration. See [LLM and multiplayer integration](docs/llm-comms.md)
-for setup, supported Python features, and demo limits. Main's role previews, theme,
-PostgreSQL configuration, and standard asset pipeline remain in place.
+The role-selection screens at `/` are previews with prompts local to each LiveView.
+The optional playable flow at `/play` provides three-player rooms, private role
+materials, a shared notebook, restricted Python checks, and local Ollama integration.
+See [LLM and multiplayer integration](docs/llm-comms.md) for gameplay, configuration,
+supported Python features, and demo limits.
 
 ## Local setup
 
@@ -25,6 +22,8 @@ PostgreSQL configuration, and standard asset pipeline remain in place.
 - Elixir 1.17 or newer with a compatible Erlang/OTP release (for example,
   Elixir 1.18 with OTP 27).
 - PostgreSQL running locally.
+- Python 3.12 or newer on the Phoenix server's `PATH` for challenge checks. Set
+  `PYTHON_EXECUTABLE` if Python is installed elsewhere.
 - Access to Hex and GitHub for dependencies and asset downloads.
 
 On macOS, install [Homebrew](https://brew.sh) if needed, then install Erlang/OTP
@@ -56,33 +55,15 @@ psql --version
 pg_isready
 ```
 
-The local configuration defaults to a PostgreSQL user named `postgres` on
-`localhost`. If your local setup uses a different username or connection
-settings, set `PGUSER`, `PGPASSWORD`, and `PGHOST` in your shell to match.
+The local configuration defaults to the `postgres` user on `localhost`. If your
+PostgreSQL setup uses different connection settings, set `PGUSER`, `PGPASSWORD`,
+and `PGHOST` in your shell. Avoid committing local credentials.
+
 The configured user must be able to create databases. `mix setup` creates
 `ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
 No PostgreSQL password is committed.
 
-Enter the postgres session
-```sh
-sudo -u postgres psql
-```
-
-inside postgres reset password
-```sh
-\password postgres
-\q
-```
-To update the postgres instance with a password and apply the password the app.
-```sh
-read -rsp "PostgreSQL password: " PGPASSWORD; echo
-export PGPASSWORD
-cd /home/runner/work/Ruber-duckDebug/Ruber-duckDebug
-```
-
-
-From the repository root, install the project dependencies and prepare the
-database and assets:
+From the repository root, install dependencies and prepare the database and assets:
 
 ```sh
 mix local.hex --force
@@ -99,35 +80,21 @@ mix phx.server
 Open <http://localhost:4000>. For an interactive console, use `iex -S mix phx.server`.
 The development dashboard is available at `/dev/dashboard`, in development only.
 
-Database connections default to user `postgres` on `localhost`. Set `PGUSER`,
-`PGPASSWORD`, and `PGHOST` in your shell to match your local PostgreSQL installation.
-The configured user must be able to create databases. `mix setup` creates
-`ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
-No PostgreSQL password is committed.
-
 ## Local AI setup (Ollama and Gemma 3)
 
-The local model is `gemma3:4b`, served through Ollama. The optional `/play` room flow
-uses it to generate verified Python challenges and end-of-round reviews.
+Ollama is optional. The `/play` flow uses the `gemma3:4b` model for challenge
+generation and additional end-of-round reviews; it falls back to curated challenges
+when generation is unavailable. Install Ollama using the
+[official instructions](https://ollama.com/download), then run:
 
-On Windows, install Ollama from PowerShell using the command from the
-[official Ollama download page](https://ollama.com/download/windows):
-
-```powershell
-irm https://ollama.com/install.ps1 | iex
-```
-
-Start Ollama, then open a new terminal in VS Code (restart VS Code if `ollama`
-is not recognized). Download the model and try an interactive conversation:
-
-```powershell
+```sh
 ollama pull gemma3:4b
 ollama run gemma3:4b
 ```
 
-Enter `/bye` to exit the conversation. Use `ollama list` to confirm the model
-is downloaded. See the [Gemma 3 4B model page](https://ollama.com/library/gemma3:4b)
-for model details.
+Enter `/bye` to exit the interactive chat. Keep Ollama running while playing.
+See [LLM and multiplayer integration](docs/llm-comms.md) for environment settings
+and the live-model smoke check.
 
 ## Checks
 
@@ -139,8 +106,9 @@ mix precommit
 ```
 
 `mix precommit` compiles with warnings as errors, removes unused dependency locks,
-formats, and runs tests. Tests require PostgreSQL; LiveView tests cover the
-landing page and public prompt interaction.
+formats, and runs tests. Tests require PostgreSQL and cover the role previews,
+lobby, room authorization and round flow, Python restrictions, and stubbed Ollama
+requests. `mix assets.build` uses the project's standard asset pipeline.
 
 ## Cooperative model
 
@@ -155,14 +123,11 @@ hypothesis, and lets the team revise or submit a solution. The full challenge is
 revealed only during the debrief; roles then rotate. An optional round timer can
 support the team without competitive interruptions.
 
-Future rooms must be coordinated by the server. Each challenge package needs driver
-code, observer evidence, researcher references, validation checks, and a root-cause
-debrief. Authorize identity, membership, and role server-side before sending any
-material. Apply this to LiveView mounts, events, broadcasts, check results,
-reconnects, and role changes; never send the whole challenge and hide panels with
-CSS. The app must not automatically expose another role's material. Any future
-execution of player-submitted code needs an isolated sandbox, not the Phoenix
-application process.
+Room membership, role authorization, turn transitions, and private challenge
+materials are enforced server-side. Seat URLs are signed bearer links; share only the
+room code, and keep each seat URL private. PubSub broadcasts room-change notifications
+rather than challenge contents. Python checks use a restricted interpreter, not a
+general-purpose sandbox; see the integration guide for its limits.
 
 ## Production configuration
 
