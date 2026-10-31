@@ -14,9 +14,12 @@ defmodule RuberDuckDebugWeb.HomeLive do
   end
 
   @impl true
-  def handle_event("select_role", %{"role" => role}, socket) do
+  def handle_event("select_role", %{"role" => role}, socket)
+      when role in ["Driver", "Observer", "Researcher"] do
     {:noreply, assign(socket, selected_role: role, page_title: "#{role} — Debug together")}
   end
+
+  def handle_event("select_role", _params, socket), do: {:noreply, socket}
 
   def handle_event("leave_role", _params, socket) do
     {:noreply, assign(socket, selected_role: nil, page_title: "Debug together")}
