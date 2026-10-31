@@ -25,7 +25,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
     ~H"""
     <Layouts.app flash={@flash}>
       <section aria-labelledby="welcome-heading" class="space-y-6">
-        <p class="text-sm font-semibold uppercase tracking-wide text-primary">
+        <p class="text-sm font-semibold uppercase tracking-wide text-base-content">
           Three players. One shared investigation.
         </p>
         <h1 id="welcome-heading" class="text-4xl font-bold">Debug together with the duck</h1>

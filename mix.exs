@@ -89,6 +89,7 @@ defmodule RuberDuckDebug.MixProject do
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["compile", "tailwind ruber_duck_debug", "esbuild ruber_duck_debug"],
       "assets.deploy": [
+        "compile",
         "tailwind ruber_duck_debug --minify",
         "esbuild ruber_duck_debug --minify",
         "phx.digest"
