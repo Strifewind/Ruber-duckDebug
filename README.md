@@ -44,6 +44,30 @@ The configured user must be able to create databases. `mix setup` creates
 `ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
 No PostgreSQL password is committed.
 
+## Local AI setup (Ollama and Gemma 3)
+
+The planned local model is `gemma3:4b`, served through Ollama. AI integration
+is not implemented in the application yet; these steps prepare the local runtime.
+
+On Windows, install Ollama from PowerShell using the command from the
+[official Ollama download page](https://ollama.com/download/windows):
+
+```powershell
+irm https://ollama.com/install.ps1 | iex
+```
+
+Start Ollama, then open a new terminal in VS Code (restart VS Code if `ollama`
+is not recognized). Download the model and try an interactive conversation:
+
+```powershell
+ollama pull gemma3:4b
+ollama run gemma3:4b
+```
+
+Enter `/bye` to exit the conversation. Use `ollama list` to confirm the model
+is downloaded. See the [Gemma 3 4B model page](https://ollama.com/library/gemma3:4b)
+for model details.
+
 ## Checks
 
 ```sh
