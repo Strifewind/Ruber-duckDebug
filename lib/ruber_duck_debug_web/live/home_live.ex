@@ -41,23 +41,47 @@ defmodule RuberDuckDebugWeb.HomeLive do
       <section aria-labelledby="roles-heading" class="space-y-4 pt-8">
         <h2 id="roles-heading" class="text-2xl font-semibold">Everyone has a part to play</h2>
         <div class="grid gap-4 sm:grid-cols-3">
-          <article id="role-driver" class="rounded-box border border-base-300 p-4">
-            <h3 class="text-xl font-semibold">Driver</h3>
+          <article id="role-driver" class="rounded-box border border-success/30 bg-success/5 p-4">
+            <h3 class="text-xl font-semibold text-success">Driver</h3>
             <p>Explain the source code, edit it, and request validation checks.</p>
           </article>
-          <article id="role-observer" class="rounded-box border border-base-300 p-4">
-            <h3 class="text-xl font-semibold">Observer</h3>
+          <article id="role-observer" class="rounded-box border border-warning/30 bg-warning/5 p-4">
+            <h3 class="text-xl font-semibold text-warning">Observer</h3>
             <p>Describe symptoms, reproduction steps, and the results of experiments.</p>
           </article>
-          <article id="role-researcher" class="rounded-box border border-base-300 p-4">
-            <h3 class="text-xl font-semibold">Researcher</h3>
+          <article id="role-researcher" class="rounded-box border border-error/30 bg-error/5 p-4">
+            <h3 class="text-xl font-semibold text-error">Researcher</h3>
             <p>Use references to propose a hypothesis and a testable experiment.</p>
           </article>
         </div>
       </section>
 
       <section aria-labelledby="duck-heading" class="space-y-4 rounded-box bg-base-200 p-6">
-        <h2 id="duck-heading" class="text-2xl font-semibold">Ask the duck</h2>
+        <div class="flex items-center gap-6">
+          <svg width="100" height="100" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="animation: spookyFloat 3s ease-in-out infinite; filter: drop-shadow(0 0 10px rgba(255,0,0,0.3)); flex-shrink: 0;">
+            <path d="M60,140 Q100,180 140,140 L160,180 L40,180 Z" fill="#4a0404" />
+            <path d="M60,120 Q60,80 100,80 Q140,80 140,120 Q140,160 100,160 Q60,160 60,120" fill="#F0E68C" stroke="#8B8000" stroke-width="3"/>
+            <path d="M70,90 L60,50 L100,80 L140,50 L130,90 Z" fill="#000" stroke="#4a0404" stroke-width="2"/>
+            <circle cx="110" cy="75" r="30" fill="#F0E68C" stroke="#8B8000" stroke-width="3"/>
+            <path d="M130,75 L150,75 L135,85 Z" fill="#FF8C00" stroke="#8B8000" stroke-width="2"/>
+            <path d="M132,82 L134,86 L136,82 Z" fill="white" />
+            <path d="M138,82 L140,86 L142,82 Z" fill="white" />
+            <circle cx="120" cy="68" r="4" fill="#2d0000"/>
+            <path d="M70,110 Q100,100 130,110" fill="none" stroke="#000" stroke-width="8" stroke-linecap="round"/>
+          </svg>
+          <div>
+            <h2 id="duck-heading" class="text-2xl font-semibold">Quackula</h2>
+            <p class="text-sm text-error font-mono animate-pulse">JUDGING YOUR CODE... 🧛‍♂️🦆</p>
+          </div>
+        </div>
+        <style>
+          @keyframes spookyFloat {
+            0%   { transform: translateY(0px) translateX(0px) rotate(0deg); }
+            33%  { transform: translateY(-8px) translateX(3px) rotate(-2deg); }
+            66%  { transform: translateY(-3px) translateX(-3px) rotate(2deg); }
+            100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+          }
+        </style>
         <p>The duck asks questions, not answers. This preview uses local prompts, not an AI service.</p>
         <p id="duck-prompt" aria-live="polite" class="text-lg font-medium">{@duck_prompt}</p>
         <button id="next-prompt" phx-click="next_prompt" class="btn btn-primary">
