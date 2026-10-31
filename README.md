@@ -19,30 +19,66 @@ materials are loaded or sent to browsers.
 
 ## Local setup
 
-Requirements:
+### Requirements
 
 - Elixir 1.17 or newer with a compatible Erlang/OTP release (for example,
   Elixir 1.18 with OTP 27).
 - PostgreSQL running locally.
 - Access to Hex and GitHub for dependencies and asset downloads.
 
-Run these commands from the repository root:
+On macOS, install [Homebrew](https://brew.sh) if needed, then install Erlang/OTP
+and Elixir:
+
+```sh
+brew install erlang elixir
+```
+
+Verify the installations:
+
+```sh
+erl -noshell -eval 'io:format("OTP ~s~n", [erlang:system_info(otp_release)]), halt().'
+elixir --version
+mix --version
+```
+
+Install PostgreSQL and start it as a background service:
+
+```sh
+brew install postgresql@17
+brew services start postgresql@17
+```
+
+Verify PostgreSQL is running:
+
+```sh
+psql --version
+pg_isready
+```
+
+The local configuration defaults to a PostgreSQL user named `postgres` on
+`localhost`. If your local setup uses a different username or connection
+settings, set `PGUSER`, `PGPASSWORD`, and `PGHOST` in your shell to match.
+The configured user must be able to create databases. `mix setup` creates
+`ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
+No PostgreSQL password is committed.
+
+From the repository root, install the project dependencies and prepare the
+database and assets:
 
 ```sh
 mix local.hex --force
 mix local.rebar --force
 mix setup
+```
+
+Start the development server:
+
+```sh
 mix phx.server
 ```
 
 Open <http://localhost:4000>. For an interactive console, use `iex -S mix phx.server`.
 The development dashboard is available at `/dev/dashboard`, in development only.
-
-Database connections default to user `postgres` on `localhost`. Set `PGUSER`,
-`PGPASSWORD`, and `PGHOST` in your shell to match your local PostgreSQL installation.
-The configured user must be able to create databases. `mix setup` creates
-`ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
-No PostgreSQL password is committed.
 
 ## Checks
 
