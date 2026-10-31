@@ -19,51 +19,165 @@ supported Python features, and demo limits.
 
 ### Requirements
 
-- Elixir 1.17 or newer with a compatible Erlang/OTP release (for example,
-  Elixir 1.18 with OTP 27).
-- PostgreSQL running locally.
-- Python 3.12 or newer on the Phoenix server's `PATH` for challenge checks. Set
-  `PYTHON_EXECUTABLE` if Python is installed elsewhere.
-- Access to Hex and GitHub for dependencies and asset downloads.
+- Elixir 1.17 or newer and a compatible Erlang/OTP release (Elixir 1.18 with
+  OTP 27 is a known-good combination). Follow the
+  [official Elixir installation guide](https://elixir-lang.org/install.html) for
+  your operating system, and verify the installed versions before continuing.
+- Git, PostgreSQL, and Python 3.12 or newer. Python runs challenge checks on the
+  Phoenix server; set `PYTHON_EXECUTABLE` if it is not discoverable on `PATH`.
+- Internet access to Hex and GitHub for dependencies and asset downloads.
 
-On macOS, install [Homebrew](https://brew.sh) if needed, then install Erlang/OTP
-and Elixir:
+### Windows
 
-```sh
-brew install erlang elixir
+Use PowerShell. Install Git and Python 3.12 with WinGet:
+
+```powershell
+winget install --id Git.Git --exact
+winget install --id Python.Python.3.12 --exact
 ```
 
-Verify the installations:
+Install Erlang/OTP and Elixir using the Windows instructions in the
+[Elixir installation guide](https://elixir-lang.org/install.html). Install
+PostgreSQL using the [Windows installer](https://www.postgresql.org/download/windows/);
+remember the password chosen for the `postgres` database user. Open a new
+PowerShell window after installing tools, then verify:
 
-```sh
-erl -noshell -eval 'io:format("OTP ~s~n", [erlang:system_info(otp_release)]), halt().'
+```powershell
+git --version
 elixir --version
 mix --version
+python --version
+psql --version
 ```
 
-Install PostgreSQL and start it as a background service:
+Set the database connection for the current PowerShell session. Enter the
+PostgreSQL password when prompted:
 
-```sh
-brew install postgresql@17
-brew services start postgresql@17
+```powershell
+$env:PGUSER = "postgres"
+$env:PGHOST = "localhost"
+$env:PGPASSWORD = Read-Host "PostgreSQL password"
 ```
 
-Verify PostgreSQL is running:
+If Python is not found by the app, set its full path:
+
+```powershell
+$env:PYTHON_EXECUTABLE = (Get-Command python).Source
+```
+
+If PostgreSQL's `psql` command is not recognized, add its `bin` directory
+(typically `C:\Program Files\PostgreSQL\17\bin`) to your `PATH`, or use the
+SQL Shell (psql) shortcut installed with PostgreSQL.
+
+### Ubuntu Linux
+
+On Ubuntu 24.04 LTS, install Git, PostgreSQL, and Python:
 
 ```sh
+sudo apt update
+sudo apt install -y git postgresql postgresql-contrib python3
+```
+
+Install Erlang/OTP and Elixir using the Linux instructions in the
+[Elixir installation guide](https://elixir-lang.org/install.html). Confirm the
+Python version is 3.12 or newer; if not, install a supported Python version and
+set `PYTHON_EXECUTABLE` to its executable path. Set a password for PostgreSQL's
+`postgres` role so the app can connect over localhost:
+
+```sh
+sudo -u postgres psql
+```
+
+At the `psql` prompt, set the password and exit:
+
+```text
+\password postgres
+\q
+```
+
+Set the connection settings in the terminal used to start the app. The password
+prompt does not put the entered value in shell history:
+
+```sh
+export PGUSER=postgres
+export PGHOST=localhost
+read -rsp "PostgreSQL password: " PGPASSWORD; echo
+export PGPASSWORD
+```
+
+If you installed a separate Python 3.12 executable, select it explicitly:
+
+```sh
+export PYTHON_EXECUTABLE="$(command -v python3.12)"
+```
+
+Verify the installation:
+
+```sh
+git --version
+elixir --version
+mix --version
+python3 --version
 psql --version
 pg_isready
 ```
 
-The local configuration defaults to the `postgres` user on `localhost`. If your
-PostgreSQL setup uses different connection settings, set `PGUSER`, `PGPASSWORD`,
-and `PGHOST` in your shell. Avoid committing local credentials.
+### macOS
 
-The configured user must be able to create databases. `mix setup` creates
-`ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
-No PostgreSQL password is committed.
+Install [Homebrew](https://brew.sh) if needed, then install Erlang/OTP, Elixir,
+Git, PostgreSQL, and Python:
 
-From the repository root, install dependencies and prepare the database and assets:
+```sh
+brew install erlang elixir git postgresql@17 python@3.12
+brew services start postgresql@17
+```
+
+Homebrew's local PostgreSQL setup normally creates a database role matching
+your macOS account. Set a password for that role so the app can connect over
+localhost:
+
+```sh
+psql -d postgres
+```
+
+At the `psql` prompt, set the password and exit:
+
+```text
+\password
+\q
+```
+
+Use the role matching your macOS account and enter its password in the app
+terminal:
+
+```sh
+export PGUSER="$(whoami)"
+export PGHOST=localhost
+read -rsp "PostgreSQL password: " PGPASSWORD; echo
+export PGPASSWORD
+export PYTHON_EXECUTABLE="$(command -v python3.12)"
+```
+
+If you use a different PostgreSQL role, set `PGUSER` to that role and provide
+its password in `PGPASSWORD`. Verify the installation:
+
+```sh
+git --version
+elixir --version
+mix --version
+python3.12 --version
+psql --version
+pg_isready
+```
+
+The configured PostgreSQL role must be able to create databases. `mix setup`
+creates `ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test`
+database. Do not commit local credentials.
+
+### Install dependencies and run
+
+In the terminal configured above, change to the repository root and install
+dependencies, prepare the database, and build assets:
 
 ```sh
 mix local.hex --force
@@ -71,14 +185,14 @@ mix local.rebar --force
 mix setup
 ```
 
-Start the development server:
+Start the development server and open <http://localhost:4000>:
 
 ```sh
 mix phx.server
 ```
 
-Open <http://localhost:4000>. For an interactive console, use `iex -S mix phx.server`.
-The development dashboard is available at `/dev/dashboard`, in development only.
+For an interactive console, run `iex -S mix phx.server`. The development
+dashboard is available at `/dev/dashboard`, in development only.
 
 ## Local AI setup (Ollama and Gemma 3)
 
