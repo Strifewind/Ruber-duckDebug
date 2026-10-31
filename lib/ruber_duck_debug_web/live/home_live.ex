@@ -102,18 +102,14 @@ defmodule RuberDuckDebugWeb.HomeLive do
 
   defp landing(assigns) do
     ~H"""
-    <section aria-labelledby="welcome-heading" class="space-y-4 pt-4">
-      <p class="text-xs font-mono font-semibold uppercase tracking-widest text-base-content dark:text-primary">
-        Halloween Hackathon 2026
+    <section aria-labelledby="welcome-heading" class="space-y-6">
+      <p class="text-sm font-semibold uppercase tracking-wide text-base-content">
+        Three players. One shared investigation.
       </p>
-      <h1 id="welcome-heading" class="text-5xl font-black leading-tight">
-        Debug together<br /><span class="text-base-content dark:text-primary">with the duck.</span>
-      </h1>
-      <p class="text-base-content/60 font-mono text-sm uppercase tracking-widest">
-        3 players · 1 bug · 0 mercy
-      </p>
-      <p class="text-lg text-base-content/80 max-w-xl pt-2">
-        A cooperative debugging game where each player holds a different piece of the puzzle. Talk to your team — and to Quackula.
+      <h1 id="welcome-heading" class="text-4xl font-bold">Debug together with the duck</h1>
+      <p class="text-lg">
+        Practice explaining code, sharing evidence, and testing hypotheses in a cooperative
+        debugging game.
       </p>
     </section>
 

@@ -4,10 +4,9 @@ defmodule RuberDuckDebugWeb.HomeLiveTest do
   import Phoenix.LiveViewTest
 
   test "home page introduces the cooperative roles", %{conn: conn} do
-    {:ok, view, _html} = live(conn, ~p"/")
+    {:ok, view, html} = live(conn, ~p"/")
 
-    assert has_element?(view, "#welcome-heading", "Debug together")
-    assert has_element?(view, "#welcome-heading span.text-base-content", "with the duck.")
+    assert html =~ "Debug together with the duck"
     assert has_element?(view, "button[phx-value-role='Driver']", "Driver")
     assert has_element?(view, "button[phx-value-role='Observer']", "Observer")
     assert has_element?(view, "button[phx-value-role='Researcher']", "Researcher")
