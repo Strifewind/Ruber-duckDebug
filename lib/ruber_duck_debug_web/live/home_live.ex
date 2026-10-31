@@ -102,11 +102,11 @@ defmodule RuberDuckDebugWeb.HomeLive do
   defp landing(assigns) do
     ~H"""
     <section aria-labelledby="welcome-heading" class="space-y-4 pt-4">
-      <p class="text-xs font-mono font-semibold uppercase tracking-widest text-primary/60">
+      <p class="text-xs font-mono font-semibold uppercase tracking-widest text-base-content dark:text-primary">
         Halloween Hackathon 2026
       </p>
       <h1 id="welcome-heading" class="text-5xl font-black leading-tight">
-        Debug together<br /><span class="text-primary">with the duck.</span>
+        Debug together<br /><span class="text-base-content dark:text-primary">with the duck.</span>
       </h1>
       <p class="text-base-content/60 font-mono text-sm uppercase tracking-widest">
         3 players · 1 bug · 0 mercy

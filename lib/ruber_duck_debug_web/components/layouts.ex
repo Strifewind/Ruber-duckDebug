@@ -46,8 +46,8 @@ defmodule RuberDuckDebugWeb.Layouts do
             <circle cx="120" cy="68" r="4" fill="#2d0000"/>
           </svg>
           <div class="flex flex-col leading-tight">
-            <span class="font-black tracking-tight text-primary font-mono">Ruber-duckDebug</span>
-            <span class="text-[10px] font-mono text-base-content/40 uppercase tracking-widest hidden sm:block">3 players · 1 bug · 0 mercy</span>
+            <span class="font-black tracking-tight text-base-content dark:text-primary font-mono">Ruber-duckDebug</span>
+            <span class="text-[10px] font-mono text-base-content/80 uppercase tracking-widest hidden sm:block">3 players · 1 bug · 0 mercy</span>
           </div>
         </.link>
       </div>
@@ -67,7 +67,7 @@ defmodule RuberDuckDebugWeb.Layouts do
     </main>
 
     <footer class="border-t border-base-300 mt-16 py-6 px-4 text-center">
-      <p class="text-xs font-mono text-base-content/40 uppercase tracking-widest">
+      <p class="text-xs font-mono text-base-content/80 uppercase tracking-widest">
         Built with Gemma 4 + Phoenix · Halloween Hackathon 2026 🦇
       </p>
     </footer>
