@@ -8,12 +8,12 @@ AI game master reveals progressively clearer hints, then awards a duck themed di
 
 Owner
 Primary responsibility
-Scaffold and state
-Create the app shell and define the shared game state or data shape first.
-Roles and interface
-Build the player cards and the screens each role sees.
-AI game master
-Create the server route, prompt, structured response, and API key handling.
-Rounds and hints
-Implement progression, submissions, hint levels, and the final diagnosis.
+
+Scaffold and state - Create the app shell and define the shared game state or data shape first.
+
+Roles and interface - Build the player cards and the screens each role sees.
+
+AI game master - Create the server route, prompt, structured response, and API key handling.
+
+Rounds and hints - Implement progression, submissions, hint levels, and the final diagnosis.
 
