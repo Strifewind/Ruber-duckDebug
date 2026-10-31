@@ -1,0 +1,64 @@
+/* The investigation desk */
+.duck-eyebrow { font-size: .7rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; opacity: .65; }
+.duck-room-meta { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; margin-top: 1.5rem; }
+.duck-badge { border: 1px solid color-mix(in srgb, currentColor 15%, transparent); border-radius: 999px; padding: .35rem .8rem; font-size: .75rem; font-weight: 600; }
+.duck-panel { border: 1px solid color-mix(in srgb, currentColor 13%, transparent); background: var(--color-base-100); border-radius: 1rem; padding: 1.7rem; }
+.duck-panel h2 { font-size: 1.4rem; font-weight: 750; letter-spacing: -.03em; margin: .3rem 0 .8rem; }
+.duck-panel h3 { font-size: 1rem; font-weight: 750; margin: .5rem 0; }
+.duck-panel > p { line-height: 1.7; }
+.duck-role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.duck-form { display: flex; flex-direction: column; gap: .65rem; margin-top: 1.2rem; }
+.duck-form label, .duck-start-form label { font-size: .8rem; font-weight: 700; }
+.duck-form input, .duck-form textarea, .duck-start-form select { border: 1px solid color-mix(in srgb, currentColor 22%, transparent); border-radius: .5rem; background: var(--color-base-100); color: inherit; padding: .75rem; width: 100%; }
+.duck-form :is(input, textarea):focus, .duck-start-form select:focus { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.duck-form textarea { resize: vertical; }
+.duck-code-input { letter-spacing: .25em; text-transform: uppercase; font-family: monospace; }
+.duck-footnote { font-size: .8rem; opacity: .65; line-height: 1.7; }
+.duck-room-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem 0; }
+.duck-room-header h1 { font-size: 2.8rem; font-family: monospace; font-weight: 800; letter-spacing: .15em; }
+.duck-room-header p:last-child { font-size: .8rem; opacity: .65; }
+.duck-player { border: 1px solid color-mix(in srgb, currentColor 15%, transparent); border-radius: .7rem; padding: 1rem; position: relative; }
+.duck-player strong { display: block; overflow-wrap: anywhere; }
+.duck-player span { position: absolute; right: 1rem; top: 1rem; font-size: .7rem; font-weight: 700; }
+.duck-player-self { border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 9%, var(--color-base-100)); }
+.duck-player[data-role="driver"] { border-color: color-mix(in srgb, var(--color-success) 30%, transparent); background: color-mix(in srgb, var(--color-success) 5%, var(--color-base-100)); }
+.duck-player[data-role="observer"] { border-color: color-mix(in srgb, var(--color-warning) 30%, transparent); background: color-mix(in srgb, var(--color-warning) 5%, var(--color-base-100)); }
+.duck-player[data-role="researcher"] { border-color: color-mix(in srgb, var(--color-error) 30%, transparent); background: color-mix(in srgb, var(--color-error) 5%, var(--color-base-100)); }
+.duck-player[data-role="driver"] .duck-eyebrow { color: var(--color-success); opacity: 1; }
+.duck-player[data-role="observer"] .duck-eyebrow { color: var(--color-warning); opacity: 1; }
+.duck-player[data-role="researcher"] .duck-eyebrow { color: var(--color-error); opacity: 1; }
+.duck-player-self { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.duck-player-empty { border-style: dashed; display: flex; align-items: center; opacity: .55; }
+.duck-host { display: flex; gap: 1.5rem; align-items: center; padding: 1.3rem 1.6rem; background: color-mix(in srgb, var(--color-primary) 14%, var(--color-base-100)); border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent); border-radius: 1rem; }
+.duck-host-avatar { font-size: 3.5rem; }
+.duck-host p:last-child { line-height: 1.7; margin-top: .25rem; }
+.duck-start-form { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+.duck-start-form select { width: auto; flex: 1; min-width: 12rem; }
+.duck-loading { display: flex; align-items: center; gap: 1rem; padding: 1rem; }
+.duck-game-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(17rem, 1fr); gap: 1.25rem; align-items: start; }
+.duck-workspace { min-height: 32rem; }
+.duck-panel-heading { display: flex; justify-content: space-between; gap: 1rem; align-items: start; }
+.duck-source { font-size: .7rem; opacity: .55; margin-bottom: 1rem; }
+.duck-objective { font-size: 1.1rem; line-height: 1.8; }
+.duck-document { border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent); margin-top: 1.4rem; padding: 1.2rem 0; line-height: 1.9; }
+#python-editor, .duck-reference { font: .85rem/1.8 "Cascadia Code", Consolas, monospace; background: #16232d; color: #d3e8df; tab-size: 4; white-space: pre; overflow: auto; }
+#python-editor { min-height: 22rem; }
+#python-editor[readonly] { opacity: .75; }
+.duck-sidebar { display: grid; gap: 1.25rem; }
+.duck-turns { display: grid; gap: .5rem; margin: 1rem 0; }
+.duck-turns li { padding: .75rem; border-left: 3px solid transparent; opacity: .5; }
+.duck-turns strong { display: block; text-transform: capitalize; }
+.duck-turns span { font-size: .8rem; }
+.duck-turns .duck-turn-active { opacity: 1; border-color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 10%, transparent); }
+.duck-controls { display: flex; gap: .5rem; flex-wrap: wrap; }
+.duck-messages { display: flex; flex-direction: column; gap: .8rem; max-height: 22rem; overflow-y: auto; padding: 1rem 0; }
+.duck-messages > p { font-size: .85rem; opacity: .6; }
+.duck-message { background: var(--color-base-200); border-radius: .6rem; padding: .8rem; font-size: .85rem; overflow-wrap: anywhere; white-space: pre-wrap; }
+.duck-message small { font-weight: 400; opacity: .6; margin-left: .3rem; }
+.duck-test { border-left: 3px solid #d5614c; margin: .7rem 0; padding: .5rem 1rem; background: var(--color-base-200); font-size: .8rem; overflow-wrap: anywhere; }
+.duck-test-pass { border-color: #2b9279; }
+.duck-review { white-space: pre-wrap; margin: 1rem 0 2rem; line-height: 1.9; }
+.duck-reference { padding: 1rem; border-radius: .6rem; max-height: 30rem; margin: 1rem 0; }
+.duck-panel summary { cursor: pointer; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .duck-host svg, .duck-host .beak-bottom { animation: none !important; } }
+@media (max-width: 760px) { .duck-lobby-grid, .duck-role-grid, .duck-game-grid { grid-template-columns: 1fr; } .duck-room-header { align-items: start; flex-direction: column; } .duck-panel { padding: 1.2rem; } .duck-host { gap: .8rem; padding: 1rem; } .duck-hero { padding-top: 1rem; } }

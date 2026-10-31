@@ -2,6 +2,7 @@
    https://tailwindcss.com/docs/configuration */
 
 @import "tailwindcss" source(none);
+@import "./game.css";
 @import "phoenix-colocated/ruber_duck_debug/colocated.css";
 @source "../css";
 @source "../js";

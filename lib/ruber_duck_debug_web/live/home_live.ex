@@ -43,6 +43,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
     ~H"""
     <Layouts.app flash={@flash}>
       <.quackula_style />
+      <.link navigate={~p"/play"} class="btn btn-primary">Play with your team →</.link>
 
       <%= if @selected_role do %>
         <.role_screen role={@selected_role} duck_prompt={@duck_prompt} prompt_index={@prompt_index} is_talking={@is_talking} />
@@ -53,7 +54,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
     """
   end
 
-  defp quackula_style(assigns) do
+  def quackula_style(assigns) do
     ~H"""
     <style>
       @keyframes spookyFloat {
@@ -77,7 +78,7 @@ defmodule RuberDuckDebugWeb.HomeLive do
     """
   end
 
-  defp quackula_svg(assigns) do
+  def quackula_svg(assigns) do
     ~H"""
     <div id="quackula-svg-wrap" class={[@is_talking && "is-talking"]} style="flex-shrink: 0;">
       <svg width={@size} height={@size} viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"

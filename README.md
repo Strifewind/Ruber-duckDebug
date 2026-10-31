@@ -12,10 +12,11 @@ Phoenix PubSub, Bandit, and the standard Tailwind/esbuild asset pipeline.
 The home LiveView introduces the roles and cycles through public duck questions.
 These preview prompts are local to each LiveView, not synchronized between players.
 
-This is an application shell, not a playable game yet: rooms, player identity,
-role assignment, private challenge packages, chat, CodeMirror, validation execution,
-AI integration, debriefs, and timers are not implemented. No private challenge
-materials are loaded or sent to browsers.
+The role-selection screens at `/` remain previews. An additional playable flow at
+`/play` provides server-managed rooms, private role materials, team communication,
+Python checks, and local Ollama integration. See [LLM and multiplayer integration](docs/llm-comms.md)
+for setup, supported Python features, and demo limits. Main's role previews, theme,
+PostgreSQL configuration, and standard asset pipeline remain in place.
 
 ## Local setup
 
@@ -106,8 +107,8 @@ No PostgreSQL password is committed.
 
 ## Local AI setup (Ollama and Gemma 3)
 
-The planned local model is `gemma3:4b`, served through Ollama. AI integration
-is not implemented in the application yet; these steps prepare the local runtime.
+The local model is `gemma3:4b`, served through Ollama. The optional `/play` room flow
+uses it to generate verified Python challenges and end-of-round reviews.
 
 On Windows, install Ollama from PowerShell using the command from the
 [official Ollama download page](https://ollama.com/download/windows):
