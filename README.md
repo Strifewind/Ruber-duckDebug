@@ -62,6 +62,24 @@ The configured user must be able to create databases. `mix setup` creates
 `ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
 No PostgreSQL password is committed.
 
+Enter the postgres session
+```sh
+sudo -u postgres psql
+```
+
+inside postgres reset password
+```sh
+\password postgres
+\q
+```
+To update the postgres instance with a password and apply the password the app.
+```sh
+read -rsp "PostgreSQL password: " PGPASSWORD; echo
+export PGPASSWORD
+cd /home/runner/work/Ruber-duckDebug/Ruber-duckDebug
+```
+
+
 From the repository root, install the project dependencies and prepare the
 database and assets:
 
