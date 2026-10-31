@@ -1,19 +1,93 @@
 # Ruber-duckDebug
 
-A collaborative debugging game where teammates receive different pieces of a bug and work together while an AI game master provides adaptive hints.
-Reporter sees the symptoms and describes what went wrong.
-Diagnostician proposes a likely cause and a testable hypothesis.
-Debugger examines the code, tests the hypothesis, and submits a fix.
-AI game master reveals progressively clearer hints, then awards a duck themed diagnosis rating.
+A cooperative debugging game for three student programmers. Each teammate receives
+different information and practices explaining evidence and testing hypotheses.
+The duck facilitates with questions rather than revealing private information or
+supplying fixes.
 
-Owner
-Primary responsibility
+## Template
 
-Scaffold and state - Create the app shell and define the shared game state or data shape first.
+The application is scaffolded with Phoenix 1.8, LiveView, Ecto/PostgreSQL,
+Phoenix PubSub, Bandit, and the standard Tailwind/esbuild asset pipeline.
+The home LiveView introduces the roles and cycles through public duck questions.
+These preview prompts are local to each LiveView, not synchronized between players.
 
-Roles and interface - Build the player cards and the screens each role sees.
+This is an application shell, not a playable game yet: rooms, player identity,
+role assignment, private challenge packages, chat, CodeMirror, validation execution,
+AI integration, debriefs, and timers are not implemented. No private challenge
+materials are loaded or sent to browsers.
 
-AI game master - Create the server route, prompt, structured response, and API key handling.
+## Local setup
 
-Rounds and hints - Implement progression, submissions, hint levels, and the final diagnosis.
+Requirements:
 
+- Elixir 1.17 or newer with a compatible Erlang/OTP release (for example,
+  Elixir 1.18 with OTP 27).
+- PostgreSQL running locally.
+- Access to Hex and GitHub for dependencies and asset downloads.
+
+Run these commands from the repository root:
+
+```sh
+mix local.hex --force
+mix local.rebar --force
+mix setup
+mix phx.server
+```
+
+Open <http://localhost:4000>. For an interactive console, use `iex -S mix phx.server`.
+The development dashboard is available at `/dev/dashboard`, in development only.
+
+Database connections default to user `postgres` on `localhost`. Set `PGUSER`,
+`PGPASSWORD`, and `PGHOST` in your shell to match your local PostgreSQL installation.
+The configured user must be able to create databases. `mix setup` creates
+`ruber_duck_debug_dev`; tests use a separate `ruber_duck_debug_test` database.
+No PostgreSQL password is committed.
+
+## Checks
+
+```sh
+mix format --check-formatted
+mix test
+mix assets.build
+mix precommit
+```
+
+`mix precommit` compiles with warnings as errors, removes unused dependency locks,
+formats, and runs tests. Tests require PostgreSQL; LiveView tests cover the
+landing page and public prompt interaction.
+
+## Cooperative model
+
+| Role | Private material | Responsibility |
+| --- | --- | --- |
+| Driver | Broken code and editor | Explain code, make edits, and request checks |
+| Observer | Symptoms, reproduction steps, and check output | Describe expected versus actual behavior |
+| Researcher | Documentation and references | Propose hypotheses and experiments |
+
+A round assigns roles, shares observations through text conversation, tests a
+hypothesis, and lets the team revise or submit a solution. The full challenge is
+revealed only during the debrief; roles then rotate. An optional round timer can
+support the team without competitive interruptions.
+
+Future rooms must be coordinated by the server. Each challenge package needs driver
+code, observer evidence, researcher references, validation checks, and a root-cause
+debrief. Authorize identity, membership, and role server-side before sending any
+material. Apply this to LiveView mounts, events, broadcasts, check results,
+reconnects, and role changes; never send the whole challenge and hide panels with
+CSS. The app must not automatically expose another role's material. Any future
+execution of player-submitted code needs an isolated sandbox, not the Phoenix
+application process.
+
+## Production configuration
+
+Provide `DATABASE_URL`, `SECRET_KEY_BASE` (generate with `mix phx.gen.secret`),
+and `PHX_HOST` through the deployment environment, never committed files.
+Set `PHX_SERVER=true` to start the HTTP server in a release; `PORT` defaults to 4000.
+Build assets with `MIX_ENV=prod mix assets.deploy`, compile the release, and run
+database migrations as part of deployment.
+
+The deterministic development/test signing keys are local-only placeholders.
+Production requires its own secret key and database connection. Configure TLS
+or a trusted TLS-terminating proxy, HTTPS redirects, and database TLS as appropriate
+for your deployment before exposing the app publicly.
