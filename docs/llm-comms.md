@@ -19,8 +19,9 @@ $env:PYTHON_EXECUTABLE = 'C:\path\to\python.exe'
 ```
 
 Open `http://localhost:4000/play` or choose **Play with your team** on the home page.
-Create a room and share its six-character code with two teammates. For a local
-demo, three tabs can join independently under different names.
+Create a room and share its 20-character code with two teammates. The code is a
+96-bit random invite credential; share it only with your team. For a local demo,
+three tabs can join independently under different names.
 
 Live roles are assigned by join order (Driver, Observer, Researcher), then rotate
 after each round. The role preview at `/` does not reserve a live seat.

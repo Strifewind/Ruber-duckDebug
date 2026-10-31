@@ -3,7 +3,7 @@ defmodule RuberDuckDebugWeb.LobbyLive do
   alias RuberDuckDebug.Rooms
 
   def mount(params, _session, socket) do
-    code = params |> Map.get("code", "") |> String.trim() |> String.upcase() |> String.slice(0, 6)
+    code = params |> Map.get("code", "") |> String.trim() |> String.upcase() |> String.slice(0, 20)
     {:ok, assign(socket, page_title: "Multiplayer lobby", room_code: code)}
   end
 
@@ -87,10 +87,13 @@ defmodule RuberDuckDebugWeb.LobbyLive do
               value={@room_code}
               class="input w-full font-mono uppercase"
               required
-              minlength="6"
-              maxlength="6"
-              placeholder="A1B2C3"
+              minlength="20"
+              maxlength="20"
+              pattern="[A-Za-z2-7]{20}"
+              placeholder="Paste your room code"
               autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
             />
             <button class="btn btn-primary" type="submit">Join investigation →</button>
           </form>

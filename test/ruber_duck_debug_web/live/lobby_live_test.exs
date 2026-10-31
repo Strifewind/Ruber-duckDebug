@@ -16,7 +16,7 @@ defmodule RuberDuckDebugWeb.LobbyLiveTest do
     {:ok, view, _} = live(conn, ~p"/play")
     view |> form("#create-room", name: "Alice") |> render_submit()
     {path, _} = assert_redirect(view)
-    assert path =~ ~r"/rooms/[A-F0-9]{6}\?seat="
+    assert path =~ ~r"/rooms/[A-Z2-7]{20}\?seat="
     {:ok, room, _} = live(build_conn(), path)
     assert has_element?(room, "#room-code-display")
     assert render(room) =~ "Alice"
@@ -34,7 +34,7 @@ defmodule RuberDuckDebugWeb.LobbyLiveTest do
     host |> form("#create-room", name: "Alice") |> render_submit()
     {path, _} = assert_redirect(host)
     {:ok, room, _} = live(build_conn(), path)
-    [_, code] = Regex.run(~r"/rooms/([A-F0-9]{6})\?", path)
+    [_, code] = Regex.run(~r"/rooms/([A-Z2-7]{20})\?", path)
 
     for name <- ["Bob", "Carol"] do
       {:ok, lobby, _} = live(build_conn(), ~p"/play")
